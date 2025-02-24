@@ -1,4 +1,6 @@
 // Modules related to the switch's stem
+include <BOSL2/std.scad>;
+echo("BOSL2 library is installed!");
 
 use <utils.scad>
 
@@ -60,7 +62,7 @@ module stem_cherry_cross(travel, diameter, sheath_length, wall_thickness, cover_
                         if (flat_cross) {
                             cherry_cross(cross_height, y_adjust=cross_y_extra, x_adjust=cross_x_extra);
                         } else {
-                            rotate([0,0,45])
+                            rotate([0,0,0])
                                 cherry_cross(cross_height, y_adjust=cross_y_extra, x_adjust=cross_x_extra);
                 // Uncomment this when you want to see the center point of the stem:
 //                            %rotate([0,0,45])
@@ -83,6 +85,12 @@ module stem_cherry_cross(travel, diameter, sheath_length, wall_thickness, cover_
                                     cylinder(
                                         d=diameter+extra_tolerance*1.333, // *1.33 because that's what seems to match the other tolerances (haha)
                                         h=stem_length+lip_height*2);
+			//BEGIN TW
+            //                    translate([0,0,stem_length-0.01])
+            //                        cylinder(
+            //                            d=diameter+extra_tolerance*1.33+extra_circle_tolerance, // *1.33 because that's what seems to match the other tolerances (haha)
+            //                            h=stem_length+0.01);
+		    //END TW
             // Angled top so that it can print without supports
                                 translate([
                                   0,
@@ -129,10 +137,25 @@ module stem_cherry_cross(travel, diameter, sheath_length, wall_thickness, cover_
                     }
                 }
             }
+			//BEGIN TW
+			gap = magnet_void ? magnet_void : "0"; // So it stays centered	
+			gaptext = str_replace_char(str(gap), ".", "");
+			translate([0.0,-6.5,-0.1])	
+				rotate(0,0,0)
+					linear_extrude(0.5)
+						mirror([1, 0, 0]) 
+						text(gaptext, size=2, font="Ubuntu", halign="center");
             // Flatten the bottom of the stem so it doesn't start printing in mid-air
-            translate([0,0,-CHERRY_CYLINDER_DIAMETER/2+flat_back_tolerance])
-            // NOTE: Using flat_back_tolerance because the amount of wiggle room on the 45° angle is too much on its own
+			//if (CHERRY_TILT != 0) {
+			//	translate([0,243.3,-CHERRY_CYLINDER_DIAMETER/2+flat_back_tolerance]) //TW
+				// NOTE: Using flat_back_tolerance because the amount of wiggle room on the //45° angle is too much on its own
+            //    cube([500,500,CHERRY_CYLINDER_DIAMETER], center=true);
+			//} else {  
+				translate([0,0,-CHERRY_CYLINDER_DIAMETER/2+flat_back_tolerance]) 
+				// NOTE: Using flat_back_tolerance because the amount of wiggle room on the 45° angle is too much on its own
                 cube([500,500,CHERRY_CYLINDER_DIAMETER], center=true);
+			//}
+			//END TW
         }
         // Add the magnet holder at the end
         difference() {

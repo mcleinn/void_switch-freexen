@@ -23,7 +23,7 @@ module sheath_cherry_cross(length, stem_diameter, travel, cover_thickness,
     sheath_width = stem_diameter+wall_thickness*2; // Side-to-side wall_thickness doesn't need to be as strong
     sheath_height = stem_diameter+wall_thickness*2; // Need wall_thickness to be full height above/below
     total_travel = travel+top_magnet_height;
-    stopper_height = CHERRY_CYLINDER_DIAMETER/2.25; // Height of the wall at the end (should be high enough to stop the stem when inserting a keycap but short enough that you can still slide it in (to the point where it clicks/snaps into place)
+    stopper_height = CHERRY_CYLINDER_DIAMETER/2; // Height of the wall at the end (should be high enough to stop the stem when inserting a keycap but short enough that you can still slide it in (to the point where it clicks/snaps into place)
     sheath_overall_length = (
         cover_thickness+length+total_travel-top_magnet_cover_thickness
         +magnet_height+magnet_wall_thickness*2+magnet_tolerance
@@ -32,6 +32,7 @@ module sheath_cherry_cross(length, stem_diameter, travel, cover_thickness,
 //    echo(sheath_width=sheath_width);
 //    echo(sheath_overall_length=sheath_overall_length);
 //    echo(sheath_height=sheath_height);
+
     difference() {
         translate([0,0,sheath_height/2]) {
             union() {
@@ -87,7 +88,7 @@ module sheath_cherry_cross(length, stem_diameter, travel, cover_thickness,
                     magnet_height=magnet_height, magnet_diameter=magnet_diameter,
                     magnet_tolerance=magnet_tolerance,
                     magnet_wall_thickness=magnet_wall_thickness,
-                    lip_height=lip_height, extra_tolerance=stem_tolerance,
+                    lip_height=lip_height, extra_tolerance=stem_tolerance, extra_circle_tolerance=0.5,
                     notch_angle=notch_angle);
            }
         // Cut a little extra up top in the event that the stem's void space feature doesn't cover everything
@@ -165,6 +166,12 @@ module sheath_cherry_cross(length, stem_diameter, travel, cover_thickness,
             translate([sheath_width/2-0.2,-2.25,stem_diameter/2.75])
                 rotate([90,0,90]) linear_extrude(1)
                     text(tolerance_text, size=2.5, font="Ubuntu:style=Bold");
+					
+			void_text = len(str(magnet_void)) > 1 ? str(magnet_void) : str(magnet_void, ".0");
+            translate([-sheath_width/2-0.2,4.0,stem_diameter/2.75])
+				mirror([0,1,0])
+					rotate([90,0,90]) linear_extrude(1)
+						text(void_text, size=2.5, font="Ubuntu:style=Bold");		
         }
     }
     if (!inside_body) {

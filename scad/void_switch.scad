@@ -5,6 +5,9 @@
 // LICENSE: TBD. Do not sell Void Switches (yet!) but feel free to make your own for personal use.
 // LICENSING NOTE: If you want to sell keyboards/switches using this design just let me know and we'll work something out! I'll help you make awesome stuff!
 
+include <BOSL2/std.scad>;
+echo("BOSL2 library is installed!");
+
 use <body.scad>
 use <stem.scad>
 use <sheath.scad>
@@ -41,18 +44,18 @@ use <utils.scad>
 // IMPORTANT VARIABLES (customize to your liking):
 
 // The amount of space interposed between the magnets. Controls how strong the switch will be; The higher the value the less force will be required to press the switch. Look at the console output to see the calculated switch strength (e.g. "NOTE: ESTIMATED STRENGTH/FORCE: ~56g"). Highly dependent on the strength and thickness of your magnets.
-MAGNET_VOID = 1.0; // [0.1:0.1:3]
+MAGNET_VOID = 1.1; // [0.1:0.1:3]
 /* MAGNET_VOID NOTES:
     * The higher the MAGNET_VOID the lower the (initial) force to move (press) the switch.
     * You're just going to have to experiment with a few different values here to see what you like.
     * The total travel of the switch has an impact on how much extra force the levitator will add.  Beyond ~3.5mmm of travel it doesn't add much (2-5g) but anything shorter than that can result in a non-trivial amount of force being added (say, 7-10g for 2mm of travel).  Having said that, anything below ~3.5mm of travel doesn't usually need the levitator anyway so there's that.
 */
 // 2-4mm of travel is traditional for mechanical key switches
-TOTAL_TRAVEL = 4; // [1:0.1:20]
+TOTAL_TRAVEL = 7.5; // [1:0.1:20]
 // How much extra space (up/down) will be used to contain the stem (does not impact TOTAL_TRAVEL).  Longer == less wobble BUT the switch will be taller.  Doesn't really impact the feel of the switch otherwise.
-SHEATH_LENGTH = 0.2; // [0:0.1:2]
+SHEATH_LENGTH = 0.2; // [0:0.1:5]
 // Wiggle room inside the sheath for the stem. If your stem doesn't effortlessly slide inside the sheath you need to increase the tolerance or check your printing layer height isn't messing with it.
-STEM_TOLERANCE = 0.11; // [0.01:0.01:0.3]
+STEM_TOLERANCE = 0.13; // [0.01:0.01:0.3]
 //   ^ IMPORTANT!  If the stem doesn't effortlessly slide in and out of the sheath or has far too much back-corner/front-corner wobble double-check that your printing layer height isn't messing with the tolerances: With STEM_WALL_THICKNESS=1.2 the bottom layer of the sheath where it touches the stem is precisely 1.68mm tall.  Your layer height can impact this value considerably which is why a 0.28mm layer height is recommended (for FDM) as this results in that layer being precisely 1.68mm above the bed.
 // NOTE: Also remember that YOU CAN ALWAYS SAND THE STEM IF IT'S TOO TIGHT.  As long as you get up to like 600 grit (or higher) your switch should still be nice and smooth (eventually--after some normal use).
 // NOTE: You can visualize STEM_TOLERANCE by uncommenting the "visualize" RENDER bits at the top of this file.
@@ -63,7 +66,7 @@ BODY_MAGNET_HEIGHT = 1.8; // [1:0.1:3]
 // NOTE: CHINESE SELLERS LIE! ~1.75mm is the norm for "4x2mm" N35 magnets... Bastards
 
 // Only used when calculating the strength of your switch (it gets spit out to the OpenSCAD console... "NOTE: ESTIMATED STRENGTH/FORCE: ~56g"). NOTE: Does not include the force added by the levitator!
-MAGNET_STRENGTH = "N35"; // [N35, N42, N45, N52]
+MAGNET_STRENGTH = "N52"; // [N35, N42, N45, N52]
 // NOTE: The magnet strength calculation assumes you're using two magnets of the same size (and uses the "BODY" magnet values).
 
 // STEM MAGNET PARAMETERS
@@ -77,7 +80,7 @@ STEM_CROSS_X_EXTRA = 0.0; // [-0.3:0.05:0.3]
 // Controls how thick the | part of the Cherry stem cross (+) will be.  Increase this if your keycaps are too loose.  Use a negative value if your keycaps are too tight.
 STEM_CROSS_Y_EXTRA = 0.0; // [-0.3:0.05:0.3]
 // Wiggle room (from a magnet height perspective, not from a diameter perspective)
-MAGNET_TOLERANCE = 0.1;
+MAGNET_TOLERANCE = 0.175;
 // How much room (diameter-wise) the magnet gets inside the stem.  Negative tolerance by default to hold the magnet tight (really press it in there). PLA and PETG should flex a bit and hold it strongly. For resin you'll probably want to set this to 0 and put some resin in the hole before inserting the magnet to hold it nice and strong.
 STEM_MAGNET_DIAMETER_TOLERANCE = 0.05;
 // TIP FOR RESIN PRINTERS: Set STEM_MAGNET_DIAMETER_TOLERANCE to 0 or 0.05 to avoid cracking and and squirt some resin in there before inserting the magnet for a strong hold.
@@ -85,11 +88,11 @@ STEM_MAGNET_DIAMETER_TOLERANCE = 0.05;
 MAGNET_WALL_THICKNESS = 0.5;
 // NOTE: MAGNET_WALL_THICKNESS is constrained by the STEM_DIAMETER.  So if it's not getting thicker on the sides you'll need to increase STEM_DIAMETER to give it more room.
 // Length of the switch_body() (See related: COVER_OVERHANG below)
-BODY_LENGTH = 14.2;
+BODY_LENGTH = 13.6;
 // Width of the switch_body() (Seriously: Look at COVER_OVERHANG!)
-BODY_WIDTH = 14.2;
+BODY_WIDTH = 13.6;
 // Technically the body doesn't need to be the same height as the sheath and stem are long.  If this is set to anything other than 0 the body will be of the height specified.  Otherwise its height will be calculated based on the length of the sheath.  AT LEAST 6 IS RECOMMENDED (so the clips will work).
-BODY_HEIGHT = 0;
+BODY_HEIGHT = 17.5;
 // The corner radius around the edges of the switch body
 BODY_CORNER_RADIUS = 0.5;
 // How thick the walls (just the sides) of the switch will be (in general)
@@ -100,9 +103,9 @@ SHEATH_LIP_HEIGHT = 0.8; // [0.5:0.1:1.5]
 
 // LESS IMPORTANT VARIABLES (maybe leave these alone)
 // How thick the top of the key switch body will be (directly under the keycap).  Doesn't need much.  Set to 0 for flush mount (not usually a good idea but you do you).
-COVER_THICKNESS = 0.5; // [0:0.1:1.5]
+COVER_THICKNESS = 0.8; // [0:0.1:1.5]
 // How much the top_cover() will overhang the switch_body() so it doesn't fall through the top of the keyboard/plate. Set to 0 for flush mount.
-COVER_OVERHANG = 0.6; // [0:0.1:1.5]
+COVER_OVERHANG = 1.2; // [0:0.1:1.5]
 // Controls the Z position of the magnet in the switch body and the sheath. Don't mess with this unless you know what you're doing.
 BODY_MAGNET_COVER_THICKNESS = 0.0; // [-1.5:0.1:1.5]
 // NOTE: THIN MAGNETS MAY NEED ADJUSTMENT TO BODY_MAGNET_COVER_THICKNESS
@@ -111,7 +114,7 @@ MAGNET_BRIDGE_DROOP = 0.2;
 // How thick bridges will be (e.g. the little lines that go under the clips in the body). They're supposed to be thin enough to "give way" (a bit) when you snap the switch into the top plate.
 CLIP_BRIDGE_THICKNESS = 0.3;
 // So we can calculate where to place the snap clips on the sides. For normal plates use 1.5mm.  For plates made out of a PCB use 1.6mm (usually).
-SWITCH_PLATE_THICKNESS = 1.5;
+SWITCH_PLATE_THICKNESS = 1.7;
 // How much wiggle room the switch body gets inside the hole on your keyboard's top plate/cover. Leave this alone unless your switches are too tight or too loose when snapping them into the plate.
 SWITCH_PLATE_TOLERANCE = 0.2;
 // How big the stem's cylinder will be (probably don't want to change this unless you're using 3mm or 5mm magnets).
@@ -120,16 +123,16 @@ STEM_DIAMETER = 5.35;
 // "cherry_cross" is presently the only supported stem type (more stem options in the future, probably)
 STEM_TYPE = "cherry_cross"; // [cherry_cross]
 // How tall the + will be (or whatever goes into the underside of the keycap). Nearly all keycaps have 4mm stems but some low profile are shorter (e.g. 3mm).
-STEM_TOP_HEIGHT = 3.5; // [2:0.1:4]
+STEM_TOP_HEIGHT = 4.4; // [2:0.1:5]
 // TIP: If making a low-profile keycap you migth want to reduce STEM_TOP_HEIGHT a bit to save some vertical space.  Example: Low-profile Cherry MX style keycaps have ~3mm of room inside (I think) so you can set this to 3 if using keycaps like that.
 // In switch_body() it divides, BODY_WIDTH/BODY_TAPER to figure out how much smaller the bottom should be in relation to the top.  If you set this too large you can end up with walls that are too thin.  Also know that you don't *need* any taper at all... It just makes it easier to insert the switch into it's respective hole in your keyboard/switch plate.  Set it to 1 to disable tapering of the switch_body() (and just push it harder!).
 BODY_TAPER = 1.1;
 // How thick the walls of the sheath will be (the part the stem slides inside of)
 SHEATH_WALL_THICKNESS = 1.2; // Doesn't need to be quite as thick/strong as the switch's body
 // How much wiggle room the sheath gets as it slides into the body
-SHEATH_TOLERANCE = 0.15;
+SHEATH_TOLERANCE = 0.18;
 // Wiggle room for the magnet where it gets inserted into the sheath (default: 0.1 for strong hold). NOTE: If you have problems with the sheath breaking when you insert the magnet just make this big (e.g. 0.25) and just use some glue.
-SHEATH_MAGNET_DIAMETER_TOLERANCE = 0.1;
+SHEATH_MAGNET_DIAMETER_TOLERANCE = 0.12;
 // TIP FOR RESIN PRINTERS: Resin tends to be brittle so to prevent cracking when inserting the magnet you may want to set SHEATH_MAGNET_DIAMETER_TOLERANCE to something like 0.1 and squirt some resin on the magnet after insertion to hold it in place.
 // The wall thickness for the magnet in the sheath
 SHEATH_MAGNET_WALL_THICKNESS = MAGNET_WALL_THICKNESS;
@@ -139,11 +142,11 @@ SHEATH_LIP_OVERHANG = 1;
 SHEATH_NOTCH_ANGLE = 1;
 // NOTE: Set SHEATH_NOTCH_ANGLE to 0 to have perfectly straight notches >< (not recommended).  If you do this you'll need to be more careful with your STEM_TOLERANCE setting.
 // How thick the little wall at the end of the sheath will be.  By default there's no wall/end stop which means that the stem can be easily removed but will also smack into whatever's underneath the switch when you press it (e.g. the sensor or LED on the PCB or the case covering those things).  If you set this to something like 0.8 you'll get a wall of sorts that prevents the stem from coming out (like, ever haha) and will also prevent it from hitting anything below the switch.  It makes it so you can press pretty hard on keycaps (to insert them) without having to worry that your brute strength will break your LEDs/sensors.  NOTE: This feature requires some flex in the plastic body of the sheath in order for the stem to snap into its channel so resin users be forewarned.
-SHEATH_END_STOP_THICKNESS = 0.0; // [0.0:0.1:1.2]
+SHEATH_END_STOP_THICKNESS = 0.8; // [0.0:0.1:1.2]
 // NOTE: If your keyboard has something underneath the switch at the correct TOTAL_TRAVEL distance you don't need the end stopper and can set SHEATH_END_STOP_THICKNESS to 0.  If you *do* want a stopper a value of 0.5 is usually good for a 0.4mm nozzle.
 // These SHEATH_CLIP_* parameters control the little clips on the sheath that let it snap-fit into the body (probably leave these alone unless you're working with something other than PLA/PETG that's either much softer or much more brittle)...
 // Controls the thickness of the clips on the side of the sheath (i.e. how much they stick out)
-SHEATH_CLIP_HEIGHT = 0.5;
+SHEATH_CLIP_HEIGHT = 0.7;
 // Controls how long the clips on the side of the sheath will be (should only ever need to be adjusted if you make sigificant changes to SHEATH_WALL_THICKNESS)
 SHEATH_CLIP_LENGTH = 0.85;
 // Controls how tall (Z; when printing) the little clips on the side of the sheath will be
@@ -159,9 +162,10 @@ $fn = 64;
 /* [What to Render] */
 
 // Choose what to render. Options are: "body", "sheath", "stem", "body+sheath" (for resin/high res printers), "%body" (for transparent body), "visualize_keyup", "visualize_keydown", "switch_plate". Example to visualize the switch sitting in your keyboard: ["%body", "visualize_keyup", "switch_plate"];
-RENDER = ["body", "sheath", "stem"];
+//RENDER = ["body"];
 // USE THIS IF YOU DON'T NEED THE BODY (e.g. you designed your own case using the new sheath negative in sheath_negative.scad)
-//RENDER = ["stem", "sheath"];
+//RENDER = ["stem", "sheath", "body"];
+RENDER = ["sheath"];
 //RENDER = ["sheath_double_sided", ""];
 // You can combine the body and sheath into a single unit if you have a resin printer since the resolution is tight enough that you don't need to worry about the orientation of the layer lines:
 //RENDER = ["body+sheath", "stem"];

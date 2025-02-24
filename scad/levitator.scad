@@ -15,20 +15,20 @@ $fn = 64;
 use <utils.scad>
 
 // Configurables
-LEVITATOR_THICKNESS = 0.4; // How thick the floor will be/how much of the cross part of the stem (+) gets eaten by THE LEVITATOR
+LEVITATOR_THICKNESS = 0.7; // How thick the floor will be/how much of the cross part of the stem (+) gets eaten by THE LEVITATOR
 WALL_THICKNESS = 0.8; // How thick around the edges you want it to be (0.8 is fine and fits under most keycaps)
 STEM_TOLERANCE = 0.15; // How tight the cross-shaped cutout will be
-MAGNET_TOLERANCE = 0.2; // Only used with MAGNET_HEIGHT (because we have some bridging)
+MAGNET_TOLERANCE = 0.1; // Only used with MAGNET_HEIGHT (because we have some bridging)
 MAGNET_DIAMETER = 4;
-MAGNET_HEIGHT = 2;
+MAGNET_HEIGHT = 1.8;
 MAGNET_DISTANCE = 3.75; // Distance from the center of the stem where the magnet goes
 
 // Constants
 CHERRY_CYLINDER_DIAMETER = 5.47; // Represents the keycap's stem (female side of the +)
-CHERRY_CROSS_LENGTH = 4; // Length of the - and the | in the +
+CHERRY_CROSS_LENGTH = 4.5; // Length of the - and the | in the +
 // We make the cross slightly thinner than normal to keep a tight fit:
-CHERRY_CROSS_THICKNESS_X = 1.1; // Width of the - and in the + (Reality: 1.31)
-CHERRY_CROSS_THICKNESS_Y = 1.1; // Width of the | in the + (Reality: 1.09)
+CHERRY_CROSS_THICKNESS_X = 1.41; // Width of the - and in the + (Reality: 1.31)
+CHERRY_CROSS_THICKNESS_Y = 1.2; // Width of the | in the + (Reality: 1.09)
 
 levitator(MAGNET_DIAMETER, MAGNET_HEIGHT, magnet_distance=MAGNET_DISTANCE, magnet_tolerance=MAGNET_TOLERANCE, wall_thickness=WALL_THICKNESS, thickness=LEVITATOR_THICKNESS, stem_tolerance=STEM_TOLERANCE);
 //levitator_double_sided(MAGNET_DIAMETER, MAGNET_HEIGHT, magnet_distance=MAGNET_DISTANCE, magnet_tolerance=MAGNET_TOLERANCE, wall_thickness=WALL_THICKNESS, thickness=LEVITATOR_THICKNESS, stem_tolerance=STEM_TOLERANCE);
@@ -57,7 +57,7 @@ module levitator(magnet_diameter, magnet_height, magnet_distance=3.75, magnet_to
             // Body of the part that holds the magnet (hollowed out below)
             translate([magnet_distance,magnet_distance,0])
                 cylinder(d=magnet_diameter+wall_thickness*2, h=height, center=true);
-        }
+        } 
         translate([0,0,-5]) cherry_cross(length=10); // Just don't die on it
         translate([0,0,height/2+thickness+wall_thickness/2]) // Stem cutout
             cube([
@@ -149,8 +149,9 @@ module uplifting_jigaroo(length, width, stem_diameter=CHERRY_CYLINDER_DIAMETER, 
 
 // This makes the + bit that slides *in* to a Cherry MX style keycap:
 module cherry_cross(length=CHERRY_CROSS_LENGTH, y_adjust=0, x_adjust=0) {
+	rotate([0,0,-45]) // TW
     linear_extrude(height=length) {
-        square([CHERRY_CROSS_THICKNESS_X+x_adjust, CHERRY_CROSS_LENGTH], center=true);
-        square([CHERRY_CROSS_LENGTH, CHERRY_CROSS_THICKNESS_Y+y_adjust], center=true);
+		square([CHERRY_CROSS_THICKNESS_X+x_adjust, CHERRY_CROSS_LENGTH], center=true);
+		square([CHERRY_CROSS_LENGTH, CHERRY_CROSS_THICKNESS_Y+y_adjust], center=true);
     }
 }

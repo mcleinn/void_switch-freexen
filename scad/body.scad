@@ -19,8 +19,8 @@ module switch_body(length, width, travel, taper=1.1, wall_thickness=1.4, sheath_
     // NOTE: These two sheath variables need to match how they're handled in the actual sheath:
     sheath_width = stem_diameter+sheath_wall_thickness*2;
     sheath_height = stem_diameter+sheath_wall_thickness*2;
-    snap_clip_protrusion = 0.2; // How much the little snap lip things stick out from the body (it gets rotate 45° so it's a little less, actually)
-    snap_clip_thickness = 0.85; // How thick the clips are
+    snap_clip_protrusion = 0.18; // How much the little snap lip things stick out from the body (it gets rotate 45° so it's a little less, actually)
+    snap_clip_thickness = 1.0; // How thick the clips are
     pin_diameter = 1.875; // Need to match the pin diameter used by the stabilizer clips
     clip_width = width/6;
     clip_side_hole_width = 0.35; // How wide the cutouts are beside each clip
@@ -225,30 +225,46 @@ module switch_body(length, width, travel, taper=1.1, wall_thickness=1.4, sheath_
         translate([length/2.15,3.15,cover_thickness+4]) rotate([-90,0,-90]) linear_extrude(1)
             text(str(gap), size=3.25, font="Ubuntu:style=Bold");
         // Also mark the total travel
-        travel_text = len(str(travel)) > 1 ? str(travel) : str(travel, ".0"); // So it looks right
+        travel_text = len(str(sheath_tolerance)) > 1 ? str(sheath_tolerance * 100) : str(sheath_tolerance * 100); // So it looks right
         translate([-length/2.15,0,cover_thickness+4]) rotate([-90,0,90]) linear_extrude(1)
-            text(travel_text, size=3.25, font="Ubuntu:style=Bold");
+            text(travel_text, size=2.5, font="Ubuntu:style=Bold");
     }
+	// TW
+	//translate([
+	//  -0.17,
+	//  -width/2.2,
+	 // body_height-0.8
+	 // ])
+	//	rotate([0,0,45])
+	//		cube([1.0,1.8,1]);
+	// TW
+	//translate([
+	//  -length/2.48,
+	 // 0.5,
+	 // body_height-0.8
+	 // ])
+	//	rotate([0,0,225])
+	//		cube([1.0,1.8,1]);
     // Add little snap/clip nubs so the switch can "snap" into place (and stay there)
     if (cover_overhang) { // Don't need the clips if doing flush mount
         translate([
             clip_width,
-            length/2+snap_clip_protrusion-cover_overhang/1.15,
+            length/2+snap_clip_protrusion-0.6/1.15, 
             cover_thickness+snap_clip_thickness/1.25+plate_thickness])
                 rotate([-60,0,0])
-                    cube([clip_width, snap_clip_thickness*2, snap_clip_thickness], center=true);
+                    cube([clip_width, snap_clip_thickness*2, snap_clip_thickness], center=true); // TW
         translate([
             -clip_width,
-            length/2+snap_clip_protrusion-cover_overhang/1.15,
+            length/2+snap_clip_protrusion-0.6/1.15,
             cover_thickness+snap_clip_thickness/1.25+plate_thickness])
                 rotate([-60,0,0])
-                    cube([clip_width, snap_clip_thickness*2, snap_clip_thickness], center=true);
+                    cube([clip_width, snap_clip_thickness*2, snap_clip_thickness], center=true); // TW
         translate([
             clip_width,
-            -length/2-snap_clip_protrusion+cover_overhang/1.15,
+            -length/2-snap_clip_protrusion+0.6/1.15,
             cover_thickness+snap_clip_thickness/1.25+plate_thickness])
                 rotate([60,0,0])
-                    cube([clip_width, snap_clip_thickness*2, snap_clip_thickness], center=true);
+                    cube([clip_width, snap_clip_thickness*2, snap_clip_thickness], center=true); // TW
     }
     // TEMP: Uncomment this to visualize the cover plate:
 //    %translate([0,0,plate_thickness/2+cover_thickness])
