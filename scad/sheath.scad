@@ -83,12 +83,20 @@ module sheath_cherry_cross(length, stem_diameter, travel, cover_thickness,
         // NOTE: We use CHERRY_CYLINDER_DIAMTER/2 because that's what stem.scad uses to flatten the underside of the stem (the two have to match)
             stem_cutout_floor
         ]) {
+		
+                //stem_cherry_cross(total_travel,
+                 //   stem_diameter, length, wall_thickness, cover_thickness,
+                //    magnet_height=magnet_height, magnet_diameter=magnet_diameter,
+                 //   magnet_tolerance=magnet_tolerance,
+                //    magnet_wall_thickness=magnet_wall_thickness,
+                //    lip_height=lip_height, extra_tolerance=stem_tolerance, extra_circle_tolerance=0.5,
+                 //   notch_angle=notch_angle);
                 stem_cherry_cross(total_travel,
                     stem_diameter, length, wall_thickness, cover_thickness,
                     magnet_height=magnet_height, magnet_diameter=magnet_diameter,
                     magnet_tolerance=magnet_tolerance,
                     magnet_wall_thickness=magnet_wall_thickness,
-                    lip_height=lip_height, extra_tolerance=stem_tolerance, extra_circle_tolerance=0.5,
+                    lip_height=lip_height, extra_tolerance=0.13, 
                     notch_angle=notch_angle);
            }
         // Cut a little extra up top in the event that the stem's void space feature doesn't cover everything
@@ -162,7 +170,7 @@ module sheath_cherry_cross(length, stem_diameter, travel, cover_thickness,
         }
         if (mark_tolerance) {
             // Mark the stem tolerance on the side
-            tolerance_text = len(str(stem_tolerance)) > 1 ? str(stem_tolerance) : str(stem_tolerance, ".0");
+            tolerance_text = len(str(stem_tolerance)) > 1 ? str(stem_tolerance, "-") : str(stem_tolerance, ".0");
             translate([sheath_width/2-0.2,-2.25,stem_diameter/2.75])
                 rotate([90,0,90]) linear_extrude(1)
                     text(tolerance_text, size=2.5, font="Ubuntu:style=Bold");
